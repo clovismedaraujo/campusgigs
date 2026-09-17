@@ -5,6 +5,7 @@ Marketplace de serviços entre universitários — conecta estudantes que precis
 Projeto desenvolvido para a disciplina **DIM0510 — Processos de Software**.
 
 ## Equipe
+Nome da equipe: Campus Gigs
 
 | Nome | Matrícula | Usuário GitHub |
 |---|---|---|

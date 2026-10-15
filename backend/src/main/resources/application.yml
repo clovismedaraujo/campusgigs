@@ -6,7 +6,6 @@ spring:
     url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:campusgigs}
     username: ${DB_USER:postgres}
     password: ${DB_PASSWORD:postgres}
-    driver-class-name: org.postgresql.Driver
 
   jpa:
     hibernate:
@@ -21,3 +20,8 @@ server:
   port: 8080
   servlet:
     context-path: /api
+
+campusgigs:
+  security:
+    approved-domains: ufrn.edu.br,escolar.ufrn.br,ufrn.br,imd.ufrn.br,dca.ufrn.br
+

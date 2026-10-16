@@ -33,6 +33,7 @@ Na Sprint 1 foram entregues e integradas na `main` (via Pull Requests com CI ver
 - **Relação com a Lei de Little ($\text{Lead Time} = \frac{\text{WIP}}{\text{Throughput}}$):** Manter o limite de $\text{WIP} = 1$ em `In Progress` evitou troca de contexto (especialmente crítico em equipe de 1 pessoa) e garantiu um *Cycle Time* curto (menos de 1 dia por cartão assim que o trabalho foi iniciado). O *Lead Time* alto ($29{,}7$ dias) deveu-se ao tempo de espera na fila (`Backlog` / `Sprint Backlog`) antes do início da execução.
 
 ### 1.3. Outros Fatos Observados
+- **Cartões parados e trabalho invisível fora do quadro Kanban:** Os cartões das funcionalidades ficaram parados por bastante tempo no quadro porque boa parte da sprint foi dedicada a estudar e decidir quais conceitos e práticas de XP (como TDD e Integração Contínua) seriam aplicados no projeto, além de realizar a estruturação inicial do backend e a implementação do pipeline de CI (`.github/workflows/ci.yml`). Foi um **erro de gestão visual não ter criado cartões específicos no quadro Kanban para essas tarefas de estruturação e implementação do CI**, o que deixou esse esforço invisível nas métricas e fez parecer que o quadro estava sem movimentação.
 - **Incidente no CI (GitHub Actions):** Na primeira execução do workflow de backend, o job falhou com `Driver org.h2.Driver claims to not accept jdbcUrl, jdbc:postgresql://localhost:5432/campusgigs_test` porque o `application-test.yml` fixava `driver-class-name: org.h2.Driver`, conflitando com a variável de ambiente `SPRING_DATASOURCE_URL` injetada pelo CI.
 - **Execução local do Backend:** Ao rodar o backend localmente sem um servidor PostgreSQL ativo na porta `5432`, ocorria `Connection to localhost:5432 refused`. Foi criado o perfil `dev` (`application-dev.yml`) com banco H2 em memória e um `docker-compose.yml` para PostgreSQL.
 - **Isolamento de testes JPA:** Ao adicionar o `ServiceListingControllerTest`, o teste subsequente (`UserControllerTest`) falhou inicialmente por restrição de chave estrangeira (`service_listings.provider_id -> users.id`), resolvido adicionando limpeza em `@AfterEach`.
@@ -68,17 +69,17 @@ Na Sprint 1 foram entregues e integradas na `main` (via Pull Requests com CI ver
 5. **Por que não havia um perfil local padronizado documentado desde o início?**
    Porque na criação inicial do backend não foi incluído um `docker-compose.yml` nem um perfil `dev` em memória para execução imediata sem dependências externas.
 
-### Problema B: Lead Time elevado (cartões criados em 16/09 e executados apenas em 15–16/10)
-1. **Por que o Lead Time médio foi de ~30 dias se o Cycle Time de cada cartão foi de apenas 1 dia?**
-   Porque os cartões ficaram aguardando no Backlog desde 16/09 e só entraram em `In Progress` nos últimos dois dias da sprint.
-2. **Por que os cartões só entraram em `In Progress` nos últimos dias?**
-   Porque na primeira metade da sprint o foco ficou apenas na configuração estrutural do repositório, modelos JPA iniciais e ajustes do acordo de processo, postergando a implementação das fatias verticais (controllers + frontend).
-3. **Por que a implementação das fatias verticais foi postergada?**
-   Porque a história principal de cadastro ainda não havia sido quebrada em sub-issues menores com critérios técnicos de aceitação claros no início da sprint.
-4. **Por que a quebra em sub-issues não ocorreu já no primeiro dia da Sprint 1?**
-   Porque o refinamento técnico detalhado (separando validação de domínio institucional e política/encriptação de senha) foi feito apenas próximo à execução.
-5. **Por que não houve um gatilho semanal para puxar o primeiro cartão mais cedo?**
-   Porque, trabalhando individualmente, não havia uma meta intermediária de entregar ao menos 1 cartão por semana para manter o *Throughput* constante.
+### Problema B: Cartões de histórias parados por muito tempo (Lead Time elevado) e trabalho invisível fora do quadro
+1. **Por que os cartões das histórias ficaram parados por tanto tempo desde 16/09 e só foram concluídos em 15–16/10?**
+   Porque antes de codificar as histórias de usuário foi necessário estudar e decidir quais práticas de XP seriam adotadas no projeto, além de estruturar o repositório e configurar o pipeline de Integração Contínua (CI).
+2. **Por que esse período de estudo, estruturação do projeto e implementação do CI fez o quadro parecer parado?**
+   Porque **foi um erro não ter registrado essas tarefas técnicas (estruturação do backend e implementação do CI) como cartões no quadro Kanban**.
+3. **Por que as tarefas de estruturação e CI não foram criadas como cartões no quadro?**
+   Porque inicialmente enxergou-se o quadro apenas como repositório de histórias de usuário finais do produto, tratando a configuração de arquitetura, CI e definição das práticas de XP como "pré-trabalho" fora do fluxo.
+4. **Por que tratar esse esforço fora do quadro prejudicou as métricas de fluxo da sprint?**
+   Porque gerou "trabalho invisível": o tempo real gasto preparando o ambiente e o CI somou-se ao tempo de espera das histórias já abertas, inflando o *Lead Time* para ~30 dias e concentrando os merges visíveis nos últimos dias.
+5. **Por que a decisão sobre quais conceitos de XP aplicar demorou para se converter em execução prática?**
+   Porque, trabalhando individualmente, faltou transformar o estudo de XP e a montagem do CI em entregáveis pequenos e rastreáveis no próprio quadro logo na primeira semana da sprint.
 
 ---
 
@@ -87,7 +88,7 @@ Na Sprint 1 foram entregues e integradas na `main` (via Pull Requests com CI ver
 | # | Ação Concreta e Verificável | Responsável | Prazo | Como será verificada na Sprint 2 |
 |---|---|---|---|---|
 | 1 | Disponibilizar perfil `dev` (H2 em memória), `docker-compose.yml` (PostgreSQL) e instruções completas de execução no `README.md` | Clóvis Araújo (`@clovismedaraujo`) | **16/10/2026** (concluída no fechamento da Sprint 1) | Qualquer avaliador ou desenvolvedor consegue subir backend + frontend seguindo apenas o `README.md` sem erro de conexão JDBC |
-| 2 | Quebrar as histórias da Sprint 2 no Planning e concluir o **primeiro PR integrado na `main` até o fim da 1ª semana da sprint**, evitando concentração no fim | Clóvis Araújo (`@clovismedaraujo`) | **23/10/2026** | Histórico de PRs (`gh pr list --state merged`) mostrando pelo menos 1 cartão em `Done` na primeira semana da Sprint 2 |
+| 2 | **Eliminar trabalho invisível:** registrar qualquer tarefa de infraestrutura/arquitetura como cartão no Kanban e concluir o **primeiro PR na `main` até o fim da 1ª semana da Sprint 2** | Clóvis Araújo (`@clovismedaraujo`) | **23/10/2026** | Quadro Kanban refletindo 100% do trabalho realizado e histórico de PRs (`gh pr list --state merged`) com entrega já na 1ª semana |
 | 3 | Garantir limpeza de dados em `@AfterEach` na ordem correta de integridade referencial em todos os novos testes de integração de controllers | Clóvis Araújo (`@clovismedaraujo`) | **30/10/2026** (contínuo em todo PR da Sprint 2) | Suíte `mvn verify` passando sem erros de `DataIntegrityViolationException` no CI em 100% dos PRs da Sprint 2 |
 
 ---

@@ -24,7 +24,7 @@ Projeto desenvolvido para a disciplina **DIM0510 — Processos de Software** (UF
 - **Retrospectiva da Sprint 1:** [`docs/retrospectiva-01.md`](docs/retrospectiva-01.md)
 - **Quadro Kanban (GitHub Projects):** [Project #4](https://github.com/users/clovismedaraujo/projects/4)
 - **Vídeo da Sprint 0 (5 min):** [Assistir no YouTube](https://youtu.be/ODNgp3iCyoM)
-- **Vídeo da Sprint 1 (5 min):** *(adicione aqui o link do vídeo da Sprint 1 antes da entrega)*
+- **Vídeo da Sprint 1 (5 min):** https://youtu.be/Iey68kA-arU
 
 ---
 

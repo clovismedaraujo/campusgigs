@@ -1,5 +1,6 @@
 package com.campusgigs.controller;
 
+import com.campusgigs.dto.UserLoginRequest;
 import com.campusgigs.dto.UserRegistrationRequest;
 import com.campusgigs.dto.UserResponse;
 import com.campusgigs.service.UserService;
@@ -23,5 +24,11 @@ public class UserController {
     public ResponseEntity<UserResponse> register(@Valid @RequestBody UserRegistrationRequest request) {
         UserResponse response = userService.registerUser(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<UserResponse> login(@Valid @RequestBody UserLoginRequest request) {
+        UserResponse response = userService.loginUser(request);
+        return ResponseEntity.ok(response);
     }
 }

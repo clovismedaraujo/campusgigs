@@ -1,17 +1,22 @@
 import { useState } from 'react';
 import { APPROVED_UFRN_DOMAINS, isApprovedInstitutionalEmail } from '../utils/emailValidator';
+import { validatePasswordPolicy } from '../utils/passwordValidator';
 import { registerUser } from '../services/userService';
 
-export default function RegisterForm() {
+export default function RegisterForm({ onRegisterSuccess }) {
   const [formData, setFormData] = useState({
     name: '',
     institutionalEmail: '',
+    password: '',
+    confirmPassword: '',
     phone: '',
     course: '',
   });
   const [errorMessage, setErrorMessage] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const passwordCheck = validatePasswordPolicy(formData.password);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -36,16 +41,39 @@ export default function RegisterForm() {
       return;
     }
 
+    if (!passwordCheck.isValid) {
+      setErrorMessage(
+        'A senha deve ter no mínimo 8 caracteres, uma letra maiúscula e um número.'
+      );
+      return;
+    }
+
+    if (formData.password !== formData.confirmPassword) {
+      setErrorMessage('As senhas informadas não coincidem.');
+      return;
+    }
+
     setIsSubmitting(true);
     try {
-      await registerUser(formData);
+      const createdUser = await registerUser({
+        name: formData.name,
+        institutionalEmail: formData.institutionalEmail,
+        password: formData.password,
+        phone: formData.phone,
+        course: formData.course,
+      });
       setSuccessMessage('Cadastro realizado com sucesso! Bem-vindo(a) ao CampusGigs.');
       setFormData({
         name: '',
         institutionalEmail: '',
+        password: '',
+        confirmPassword: '',
         phone: '',
         course: '',
       });
+      if (onRegisterSuccess) {
+        onRegisterSuccess(createdUser);
+      }
     } catch (error) {
       setErrorMessage(error.message || 'Erro ao realizar o cadastro.');
     } finally {
@@ -116,6 +144,46 @@ export default function RegisterForm() {
             />
           </div>
         </div>
+
+        <div className="form-row">
+          <div className="form-group">
+            <label htmlFor="password">Senha</label>
+            <input
+              id="password"
+              name="password"
+              type="password"
+              placeholder="Mínimo 8 caracteres"
+              value={formData.password}
+              onChange={handleChange}
+              required
+            />
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="confirmPassword">Confirmar senha</label>
+            <input
+              id="confirmPassword"
+              name="confirmPassword"
+              type="password"
+              placeholder="Repita sua senha"
+              value={formData.confirmPassword}
+              onChange={handleChange}
+              required
+            />
+          </div>
+        </div>
+
+        <ul className="password-checklist" aria-label="Requisitos de senha">
+          <li className={passwordCheck.hasMinLength ? 'met' : ''}>
+            Mínimo de 8 caracteres
+          </li>
+          <li className={passwordCheck.hasUppercase ? 'met' : ''}>
+            Pelo menos 1 letra maiúscula
+          </li>
+          <li className={passwordCheck.hasNumber ? 'met' : ''}>
+            Pelo menos 1 número
+          </li>
+        </ul>
 
         {errorMessage && (
           <div className="alert alert-error" role="alert">

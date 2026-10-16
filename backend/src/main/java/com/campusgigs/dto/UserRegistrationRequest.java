@@ -18,6 +18,9 @@ public class UserRegistrationRequest {
     @Email(message = "Formato de e-mail inválido")
     private String institutionalEmail;
 
+    @NotBlank(message = "A senha é obrigatória")
+    private String password;
+
     private String phone;
 
     private String course;

@@ -30,6 +30,10 @@ public class User {
     @Column(nullable = false, unique = true)
     private String institutionalEmail;
 
+    @NotBlank(message = "A senha é obrigatória")
+    @Column(nullable = false)
+    private String password;
+
     private String phone;
 
     private String course;

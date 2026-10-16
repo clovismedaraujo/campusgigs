@@ -21,11 +21,12 @@
   color: #ffffff;
   padding: 1.25rem 2rem;
   box-shadow: 0 2px 8px rgba(15, 23, 42, 0.12);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
 .brand {
-  max-width: 960px;
-  margin: 0 auto;
   display: flex;
   align-items: center;
   gap: 0.875rem;
@@ -45,6 +46,27 @@
   color: #bfdbfe;
 }
 
+.user-header-info {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  font-size: 0.9rem;
+}
+
+.btn-logout {
+  background: rgba(255, 255, 255, 0.15);
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 6px;
+  padding: 0.4rem 0.85rem;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.btn-logout:hover {
+  background: rgba(255, 255, 255, 0.25);
+}
+
 .app-main {
   flex: 1;
   display: flex;
@@ -53,9 +75,40 @@
   padding: 2rem 1rem;
 }
 
+.auth-wrapper {
+  width: 100%;
+  max-width: 500px;
+}
+
+.auth-tabs {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+  background: #e2e8f0;
+  padding: 0.3rem;
+  border-radius: 10px;
+}
+
+.tab-btn {
+  flex: 1;
+  border: none;
+  background: transparent;
+  padding: 0.6rem;
+  border-radius: 8px;
+  font-weight: 600;
+  color: #475569;
+  cursor: pointer;
+}
+
+.tab-btn.active {
+  background: #ffffff;
+  color: #1e3a8a;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.1);
+}
+
 .register-card {
   width: 100%;
-  max-width: 480px;
+  max-width: 500px;
   background: #ffffff;
   border-radius: 12px;
   padding: 2rem;
@@ -129,6 +182,51 @@ input:focus {
 .field-hint {
   font-size: 0.78rem;
   color: #64748b;
+}
+
+.password-checklist {
+  list-style: none;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  font-size: 0.82rem;
+  color: #64748b;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.password-checklist li::before {
+  content: '○ ';
+  color: #94a3b8;
+}
+
+.password-checklist li.met {
+  color: #15803d;
+  font-weight: 600;
+}
+
+.password-checklist li.met::before {
+  content: '✓ ';
+  color: #16a34a;
+}
+
+.welcome-subtitle {
+  color: #475569;
+  margin-top: 0.4rem;
+  margin-bottom: 1.25rem;
+}
+
+.profile-summary {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  font-size: 0.92rem;
 }
 
 .alert {

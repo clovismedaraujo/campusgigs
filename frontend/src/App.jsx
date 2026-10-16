@@ -1,6 +1,8 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import RegisterForm from './components/RegisterForm';
+import ServiceListingForm from './components/ServiceListingForm';
 import { loginUser } from './services/userService';
+import { DEFAULT_CATEGORIES, getListings } from './services/listingService';
 import './App.css';
 
 export default function App() {
@@ -9,6 +11,25 @@ export default function App() {
   const [loginData, setLoginData] = useState({ institutionalEmail: '', password: '' });
   const [loginError, setLoginError] = useState('');
   const [isLoggingIn, setIsLoggingIn] = useState(false);
+
+  const [listings, setListings] = useState([]);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState('');
+
+  const loadListings = async (category = selectedCategory, search = searchTerm) => {
+    try {
+      const data = await getListings({ category, search });
+      setListings(data);
+    } catch {
+      // Mantém lista atual se o backend estiver indisponível
+    }
+  };
+
+  useEffect(() => {
+    if (currentUser) {
+      loadListings();
+    }
+  }, [currentUser]);
 
   const handleLoginSubmit = async (e) => {
     e.preventDefault();
@@ -25,6 +46,16 @@ export default function App() {
     }
   };
 
+  const handleListingCreated = (newListing) => {
+    setListings((prev) => [newListing, ...prev]);
+  };
+
+  const handleFilterChange = (newCategory, newSearch) => {
+    setSelectedCategory(newCategory);
+    setSearchTerm(newSearch);
+    loadListings(newCategory, newSearch);
+  };
+
   return (
     <div className="app-container">
       <header className="app-header">
@@ -37,7 +68,9 @@ export default function App() {
         </div>
         {currentUser && (
           <div className="user-header-info">
-            <span>Olá, <strong>{currentUser.name}</strong></span>
+            <span>
+              Olá, <strong>{currentUser.name}</strong> ({currentUser.institutionalEmail})
+            </span>
             <button
               type="button"
               className="btn-logout"
@@ -51,27 +84,74 @@ export default function App() {
 
       <main className="app-main">
         {currentUser ? (
-          <div className="register-card welcome-card">
-            <span className="badge">Conta Verificada UFRN</span>
-            <h2>Bem-vindo(a), {currentUser.name}!</h2>
-            <p className="welcome-subtitle">
-              Seu acesso seguro à plataforma CampusGigs está ativo.
-            </p>
-            <div className="profile-summary">
-              <div>
-                <strong>E-mail institucional:</strong> {currentUser.institutionalEmail}
+          <div className="dashboard-container">
+            <section className="dashboard-section">
+              <ServiceListingForm
+                provider={currentUser}
+                onListingCreated={handleListingCreated}
+              />
+            </section>
+
+            <section className="dashboard-section">
+              <div className="listings-board">
+                <div className="board-header">
+                  <div>
+                    <span className="badge">Mural do Campus</span>
+                    <h2>Serviços Disponíveis na Busca</h2>
+                  </div>
+
+                  <div className="search-controls">
+                    <input
+                      type="search"
+                      placeholder="Buscar por título ou descrição..."
+                      value={searchTerm}
+                      onChange={(e) => handleFilterChange(selectedCategory, e.target.value)}
+                    />
+                    <select
+                      aria-label="Filtrar por categoria"
+                      value={selectedCategory}
+                      onChange={(e) => handleFilterChange(e.target.value, searchTerm)}
+                    >
+                      <option value="">Todas as categorias</option>
+                      {DEFAULT_CATEGORIES.map((cat) => (
+                        <option key={cat} value={cat}>
+                          {cat}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+
+                {listings.length === 0 ? (
+                  <p className="empty-state">
+                    Nenhum anúncio encontrado no momento. Publique o primeiro serviço acima!
+                  </p>
+                ) : (
+                  <div className="listings-grid">
+                    {listings.map((item) => (
+                      <article key={item.id} className="listing-card">
+                        <div className="listing-card-top">
+                          <span className="badge">{item.categoryName}</span>
+                          <span className="listing-price">
+                            R$ {Number(item.price).toFixed(2)}
+                          </span>
+                        </div>
+                        <h3>{item.title}</h3>
+                        <p className="listing-description">{item.description}</p>
+                        <div className="listing-meta">
+                          <span>
+                            <strong>Disponibilidade:</strong> {item.availability}
+                          </span>
+                          <span>
+                            <strong>Prestador:</strong> {item.providerName}
+                          </span>
+                        </div>
+                      </article>
+                    ))}
+                  </div>
+                )}
               </div>
-              {currentUser.course && (
-                <div>
-                  <strong>Curso:</strong> {currentUser.course}
-                </div>
-              )}
-              {currentUser.phone && (
-                <div>
-                  <strong>Contato:</strong> {currentUser.phone}
-                </div>
-              )}
-            </div>
+            </section>
           </div>
         ) : (
           <div className="auth-wrapper">
@@ -111,7 +191,10 @@ export default function App() {
                       placeholder="nome@ufrn.edu.br"
                       value={loginData.institutionalEmail}
                       onChange={(e) =>
-                        setLoginData((prev) => ({ ...prev, institutionalEmail: e.target.value }))
+                        setLoginData((prev) => ({
+                          ...prev,
+                          institutionalEmail: e.target.value,
+                        }))
                       }
                       required
                     />

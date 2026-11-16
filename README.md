@@ -120,3 +120,9 @@ cd backend
 cd frontend
 npm test
 ```
+
+---
+
+## Licença
+
+Distribuído sob a licença MIT. Veja [`LICENSE`](LICENSE).

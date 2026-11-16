@@ -1,8 +1,9 @@
-# CampusGigs — Acordo de Processo (revisão 1, Sprint 1)
+# CampusGigs — Acordo de Processo (revisão 2, Sprint 2)
 
 
 ## 1. Cadência
-- Sprint 1: 14/09 a 02/10 
+- Sprint 1: 14/09 a 16/10 (entrega adiada de 02/10 pelo ajuste do cronograma de 03/10)
+- Sprint 2: 01/11 a 30/11 (entrega final às 23:59). Planning em 16/11; dailies online em 23/11 e 25/11. **(novo)**
 
 
 ## 2. Cerimônias
@@ -39,6 +40,7 @@ GitHub (repositório, Issues, PRs, Actions), GitHub Projects (Project #4), Intel
 
 - **WIP de In Progress 1 (alterado):** com uma pessoa só, 2 itens em andamento já é troca de tarefa. Se eu precisar de mais, registro o motivo na retrospectiva.
 - Cartão bloqueado recebe o label `blocked` e o motivo no comentário.
+- **Todo trabalho vira cartão (novo, ação 2 da retrospectiva 01):** tarefas de infraestrutura, CI, Docker e documentação também entram no quadro, para não haver trabalho invisível.
 - O GitHub só mostra o limite, não o impõe. Quem impõe sou eu: com o limite atingido, termino antes de começar.
 
 ## 7. Métricas
@@ -54,3 +56,9 @@ GitHub (repositório, Issues, PRs, Actions), GitHub Projects (Project #4), Intel
 ## 8. Prática de XP (novo)
 - **Integração contínua:** o CI roda em todo PR e branches são curtas (integradas em até 2 dias).
 - **TDD:** em cartões de lógica, o commit do teste vem antes do commit da implementação.
+
+## 9. Implantação e métricas DORA (novo)
+- **O que é uma implantação:** o projeto não tem ambiente de produção hospedado. A `main` é o artefato entregue: qualquer pessoa sobe a versão atual com `docker compose up`. Por isso, **uma implantação é um merge de PR na `main` com o CI verde**.
+- **Falha de mudança:** uma implantação que deixa o CI da `main` vermelho ou que exige um PR de correção (`fix:`) do que foi integrado.
+- **Recuperação:** o tempo entre a implantação com falha e o merge que deixa a `main` verde de novo.
+- Os dados são coletados do próprio repositório com `gh pr list --state merged` e `gh run list --branch main`, e o método fica descrito em `docs/dora.md`.

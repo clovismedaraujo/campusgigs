@@ -57,6 +57,10 @@ jobs:
         if: hashFiles('frontend/package-lock.json') != ''
         working-directory: frontend
         run: npm ci
+      - name: Lint do frontend
+        if: hashFiles('frontend/package-lock.json') != ''
+        working-directory: frontend
+        run: npm run lint
       - name: Testes do frontend
         if: hashFiles('frontend/package-lock.json') != ''
         working-directory: frontend

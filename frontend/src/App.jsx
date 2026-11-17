@@ -29,6 +29,8 @@ export default function App() {
     if (currentUser) {
       loadListings();
     }
+    // Carrega o mural só ao autenticar; a busca por filtros é disparada pelo usuário.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentUser]);
 
   const handleLoginSubmit = async (e) => {

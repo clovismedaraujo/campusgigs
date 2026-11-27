@@ -69,3 +69,25 @@ jobs:
         if: hashFiles('frontend/package-lock.json') != ''
         working-directory: frontend
         run: npm run build
+  docker:
+    name: docker
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Subir a aplicação com docker compose
+        run: docker compose up -d --build
+      - name: Smoke test pelo nginx (frontend → backend → PostgreSQL)
+        run: |
+          for i in $(seq 1 60); do
+            if curl -sf http://localhost:3000/api/health; then echo; break; fi
+            sleep 2
+          done
+          curl -sf http://localhost:3000/api/health | grep -q '"UP"'
+          curl -sf -o /dev/null http://localhost:3000/
+          curl -sf http://localhost:3000/api/listings
+      - name: Logs dos containers (em caso de falha)
+        if: failure()
+        run: docker compose logs
+      - name: Derrubar
+        if: always()
+        run: docker compose down -v

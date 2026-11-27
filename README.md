@@ -51,6 +51,26 @@ Projeto desenvolvido para a disciplina **DIM0510 — Processos de Software** (UF
 
 ## Como Executar o Projeto Localmente
 
+### Caminho rápido: tudo com Docker (recomendado)
+
+Só é preciso ter o **Docker** com o Docker Compose. A partir da raiz do repositório:
+
+```bash
+docker compose up --build
+```
+
+O primeiro build leva alguns minutos, por causa do download das dependências. Depois disso:
+
+| Serviço | Endereço |
+|---|---|
+| Aplicação (frontend + API via nginx) | **http://localhost:3000** |
+| API do backend | http://localhost:8080/api (status em `/api/health`) |
+| PostgreSQL 16 | `localhost:5432` (usuário e senha `postgres`, banco `campusgigs`) |
+
+Para parar, use `docker compose down`. Para apagar também os dados do banco, use `docker compose down -v`.
+
+### Execução manual (sem Docker para a aplicação)
+
 ### Pré-requisitos
 - **Java 21** (JDK 21)
 - **Node.js 20+** e **npm**
@@ -69,10 +89,10 @@ java -jar target/backend-0.0.1-SNAPSHOT.jar --spring.profiles.active=dev
 *(No Windows PowerShell, use `.\mvnw.cmd package -DskipTests`)*
 
 #### Opção B — Execução com PostgreSQL via Docker
-Caso prefira subir o PostgreSQL na porta `5432`:
+Caso prefira subir só o PostgreSQL na porta `5432`:
 
 ```bash
-docker compose up -d
+docker compose up -d db
 cd backend
 ./mvnw package -DskipTests
 java -jar target/backend-0.0.1-SNAPSHOT.jar
@@ -96,7 +116,7 @@ Acesse a aplicação no navegador em: **http://localhost:5173/**
 
 ## O Que Esperar (Roteiro de Teste Manual)
 
-1. Abra **http://localhost:5173/** no navegador.
+1. Abra **http://localhost:3000/** (Docker) ou **http://localhost:5173/** (execução manual) no navegador.
 2. **Teste de bloqueio de domínio não autorizado:** Na aba **Criar conta**, tente cadastrar um e-mail comum (ex.: `aluno@gmail.com`). O sistema rejeitará o cadastro informando os domínios institucionais aceitos da UFRN.
 3. **Teste da política de senha:** Digite uma senha fraca (ex.: `fraca123`) e observe o checklist visual indicar que falta letra maiúscula. Em seguida, informe uma senha forte (ex.: `Campus2026`).
 4. **Concluir cadastro e acessar a plataforma:** Cadastre-se com um e-mail institucional da UFRN (ex.: `clovis@ufrn.edu.br`) e senha `Campus2026`. Você será autenticado e direcionado automaticamente ao painel principal do estudante.
